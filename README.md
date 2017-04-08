@@ -21,5 +21,11 @@ JS: npm run webpack
 SCSS: compass watch
 ```
 
+## Run Server Commands
+the server will be running at port # 3000
+```
+npm start
+```
+
 ## Where to see the final result?
 Go to localhost:3000 to see.
