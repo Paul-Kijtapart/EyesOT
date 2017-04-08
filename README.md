@@ -15,10 +15,10 @@ gem install compass susy breakpoint compass-normalize
 compass watch
 ```
 
-## Debugging commands:
+### Debugging and Compile commands:
 ```
-npm run webpack
-compass watch
+JS: npm run webpack
+SCSS: compass watch
 ```
 
 ## Where to see the final result?
