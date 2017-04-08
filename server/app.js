@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const path = require("path");
 const favicon = require('serve-favicon');
 var app = express();
+var bodyParser = require('body-parser')
 
 /* Paths */
 const VIEW_PATH = path.join(__dirname, "views");
@@ -15,9 +16,24 @@ app.use(morgan('dev'));
 
 /* Handle each route */
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:false}));
+
 app.get('/', function(req, res) {
 	res.sendFile(path.join(VIEW_PATH, "index.html"));
 });
+
+app.get('/test/', function(req, res) {
+
+  	res.send('Hello World!')
+})
+
+app.post('/newEvent/', function(req,res){
+	console.log(req.body)
+
+	console.log(res.body)
+	res.send("new event created")
+})
 
 /* ERROR HANDLERS */
 
