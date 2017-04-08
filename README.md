@@ -11,7 +11,15 @@ npm run webpack
 2. CSS
 ```
 gem update --system
-gem install compass
+gem install compass susy breakpoint
+compass watch
 ```
 
-Now go to localhost:3000 to see.
+## Debugging commands:
+```
+npm run webpack
+compass watch
+```
+
+## Where to see the final result?
+Go to localhost:3000 to see.
