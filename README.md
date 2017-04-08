@@ -11,7 +11,7 @@ npm run webpack
 2. CSS
 ```
 gem update --system
-gem install compass susy breakpoint
+gem install compass susy breakpoint compass-normalize
 compass watch
 ```
 
