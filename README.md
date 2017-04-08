@@ -11,7 +11,21 @@ npm run webpack
 2. CSS
 ```
 gem update --system
-gem install compass
+gem install compass susy breakpoint compass-normalize
+compass watch
 ```
 
-Now go to localhost:3000 to see.
+### Debugging and Compile commands:
+```
+JS: npm run webpack
+SCSS: compass watch
+```
+
+## Run Server Commands
+the server will be running at port # 3000
+```
+npm start
+```
+
+## Where to see the final result?
+Go to localhost:3000 to see.
