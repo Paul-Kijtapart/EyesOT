@@ -45,8 +45,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -91,7 +94,8 @@ public class TensorFlowImageListener implements OnImageAvailableListener {
 
   private RecognitionScoreView scoreView;
 
-  List<String> objectsFound;
+  Set<String> objectsFound;
+  Set<String> dangerousThings;
 
   public void initialize(
       final AssetManager assetManager,
@@ -105,7 +109,14 @@ public class TensorFlowImageListener implements OnImageAvailableListener {
     this.scoreView = scoreView;
     this.handler = handler;
     this.sensorOrientation = sensorOrientation;
-    this.objectsFound = new ArrayList<String>();
+    this.objectsFound = new HashSet<>();
+    this.dangerousThings = new HashSet<>();
+    this.dangerousThings.add("rifle");
+    this.dangerousThings.add("cleaver");
+    this.dangerousThings.add("hatchet");
+    this.dangerousThings.add("hammer");
+    this.dangerousThings.add("chain saw");
+    this.dangerousThings.add("assult rifle");
   }
 
   private void drawResizedBitmap(final Bitmap src, final Bitmap dst) {
@@ -216,15 +227,29 @@ public class TensorFlowImageListener implements OnImageAvailableListener {
             LOGGER.v("%d results", results.size());
             for (final Classifier.Recognition result : results) {
               LOGGER.v("Result: " + result.getTitle());
-              if (result.getTitle().contains("rifle") && !objectsFound.contains("rifle")) {
-                LOGGER.i("FOUND RIFLE *******************");
-                objectsFound.add("rifle");
+              String title = result.getTitle();
+              if (dangerousThings.contains(title) && !objectsFound.contains(title)) {
+                objectsFound.add(title);
                 try {
+                  double lat = 49.277138;
+                  double lon = -123.117802;
+                  long timestamp = System.currentTimeMillis();
+                  String device_id = "PPAP01";
+                  String type = "Image";
+                  String data = title;
+                  double confidence = result.getConfidence();
+
                   JSONObject postData = new JSONObject();
-                  postData.put("name", "hello");
-                  System.out.println("sending: " + postData.toString());
-                  new SendDeviceDetails().execute("http://requestb.in/qhx8bkqh", postData.toString());
-                  LOGGER.i("sent");
+                  postData.put("lat", lat);
+                  postData.put("lon", lon);
+                  postData.put("timestamp", timestamp);
+                  postData.put("device_id", device_id);
+                  postData.put("type", type);
+                  postData.put("data", data);
+                  postData.put("confidence", confidence);
+
+                  new SendDeviceDetails().execute("http://eyesofthethings.herokuapp.com/newEvent", postData.toString());
+                  LOGGER.i("sent " + postData.toString());
                 } catch (JSONException e) {
                   e.printStackTrace();
                 }
@@ -250,7 +275,7 @@ public class TensorFlowImageListener implements OnImageAvailableListener {
 
         httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
         httpURLConnection.setRequestMethod("POST");
-
+        httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
         httpURLConnection.setDoOutput(true);
 
         DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
