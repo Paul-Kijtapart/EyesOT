@@ -248,9 +248,8 @@ public class TensorFlowImageListener implements OnImageAvailableListener {
                   postData.put("data", data);
                   postData.put("confidence", confidence);
 
-                  System.out.println("sending: " + postData.toString());
                   new SendDeviceDetails().execute("http://eyesofthethings.herokuapp.com/newEvent", postData.toString());
-                  LOGGER.i("sent");
+                  LOGGER.i("sent " + postData.toString());
                 } catch (JSONException e) {
                   e.printStackTrace();
                 }
